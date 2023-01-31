@@ -1,11 +1,29 @@
 type Query {
-  users: [User!]!
+  me: User!
+  workspaces: [Workspace!]!
+  codebases: [Codebase!]!
 }
 type Mutation {
-  addUser(name: String!, email: String!): User!
+  createWorkspace(name: String!): Workspace!
+  createCode(workspace_id:ID! , title: String!, code: String!, language: String!): Codebase!
 }
 type User {
   id: ID
-  name: String!
+  name: String
   email: String!
+  github_id: String!
+}
+type Workspace {
+  id: ID
+  name: String!
+  user: User!
+  codes: [Codebase]
+}
+type Codebase {
+  id: ID
+  title: String!
+  code: String!
+  language: String!
+  user: User!
+  workspace: Workspace!
 }
