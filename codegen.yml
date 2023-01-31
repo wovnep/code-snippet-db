@@ -6,3 +6,7 @@ generates:
       - "typescript-resolvers"
     config:
       useIndexSignature: true
+      contextType: ../models/index.js#UserModel
+      mappers:
+        Codebase: ../models/index.js#CodebaseModel
+        Workspace: ../models/index.js#WorkspaceModel

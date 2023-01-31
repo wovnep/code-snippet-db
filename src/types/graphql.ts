@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { CodebaseModel, WorkspaceModel, UserModel } from '../models/index.js';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,27 +15,56 @@ export type Scalars = {
   Float: number;
 };
 
+export type Codebase = {
+  __typename?: 'Codebase';
+  code: Scalars['String'];
+  id?: Maybe<Scalars['ID']>;
+  language: Scalars['String'];
+  title: Scalars['String'];
+  user: User;
+  workspace: Workspace;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  addUser: User;
+  createCode: Codebase;
+  createWorkspace: Workspace;
 };
 
 
-export type MutationAddUserArgs = {
-  email: Scalars['String'];
+export type MutationCreateCodeArgs = {
+  code: Scalars['String'];
+  language: Scalars['String'];
+  title: Scalars['String'];
+  workspace_id: Scalars['ID'];
+};
+
+
+export type MutationCreateWorkspaceArgs = {
   name: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  users: Array<User>;
+  codebases: Array<Codebase>;
+  me: User;
+  workspaces: Array<Workspace>;
 };
 
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
+  github_id: Scalars['String'];
+  id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type Workspace = {
+  __typename?: 'Workspace';
+  codes?: Maybe<Array<Maybe<Codebase>>>;
   id?: Maybe<Scalars['ID']>;
   name: Scalars['String'];
+  user: User;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -108,41 +138,69 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Codebase: ResolverTypeWrapper<CodebaseModel>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
+  Workspace: ResolverTypeWrapper<WorkspaceModel>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
+  Codebase: CodebaseModel;
   ID: Scalars['ID'];
   Mutation: {};
   Query: {};
   String: Scalars['String'];
   User: User;
+  Workspace: WorkspaceModel;
 }>;
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'email' | 'name'>>;
-}>;
-
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
-}>;
-
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type CodebaseResolvers<ContextType = UserModel, ParentType extends ResolversParentTypes['Codebase'] = ResolversParentTypes['Codebase']> = ResolversObject<{
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  workspace?: Resolver<ResolversTypes['Workspace'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type Resolvers<ContextType = any> = ResolversObject<{
+export type MutationResolvers<ContextType = UserModel, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  createCode?: Resolver<ResolversTypes['Codebase'], ParentType, ContextType, RequireFields<MutationCreateCodeArgs, 'code' | 'language' | 'title' | 'workspace_id'>>;
+  createWorkspace?: Resolver<ResolversTypes['Workspace'], ParentType, ContextType, RequireFields<MutationCreateWorkspaceArgs, 'name'>>;
+}>;
+
+export type QueryResolvers<ContextType = UserModel, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  codebases?: Resolver<Array<ResolversTypes['Codebase']>, ParentType, ContextType>;
+  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  workspaces?: Resolver<Array<ResolversTypes['Workspace']>, ParentType, ContextType>;
+}>;
+
+export type UserResolvers<ContextType = UserModel, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  github_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type WorkspaceResolvers<ContextType = UserModel, ParentType extends ResolversParentTypes['Workspace'] = ResolversParentTypes['Workspace']> = ResolversObject<{
+  codes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Codebase']>>>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type Resolvers<ContextType = UserModel> = ResolversObject<{
+  Codebase?: CodebaseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Workspace?: WorkspaceResolvers<ContextType>;
 }>;
 
